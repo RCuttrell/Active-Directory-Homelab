@@ -64,5 +64,12 @@ To install Sysmon, on both the Windows machines, I first downloaded Syson by Sys
 
 # 
 
+The next step was to intruct the Splunk Universal Forwarder on what to send over to the Splunk Server. This was achieved by editing the inputs.conf file of the Universal Forwarder on my Windows machines. This was found by going to LocalDisk(C:)>ProgramFiles>SplunkUniversalForwarder>etc>system>default>inputs.conf. However, this was not the actual file I edited. I wanted to leave that default file there to ensure that if something went wrong, I could revert back to that default file. Instead, I opened up notepad as administrator and copied the config file provided by MyDFIR in his guide. The file was saved and store in LocalDisk(C:)>ProgramFiles>SplunkUniversalForwarder>etc>system>local.
+
+![inputs conf file](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/26d9c45d-4887-4ff7-82a6-3665bc93b830)
+![system local inputs conf](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/681b4c0a-257a-47a8-9cda-6f7f953b60a9)
+
+
+#
 
 
