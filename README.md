@@ -72,4 +72,11 @@ The next step was to intruct the Splunk Universal Forwarder on what to send over
 
 #
 
+Because I updated the inputs.conf file, I needed to restart the Splunk Universal Forwarder. To do this, I opened services as administrator and scrolled down to SplunkForwarder. As I scrolled, I noticed the Log On was set to This account. By double clikcing SplunkForwarder, I tabbed over to Log On and checked off Local System account. This ensured that Splunk would be able to collect logs and not run into any problems due to permissions. Afterwards, I restarted the Splunk Forwarder service.
+
+![Splunk log on](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/47ce6297-c9f5-4356-9833-eb13594e43cc)
+![restart splunk forwarder](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/4c4dd469-45b7-439f-af39-358dc66541fb)
+
+#
+
 
