@@ -18,7 +18,8 @@ Proxmox Config and Web Interface
 
 #
 
-Now it was time to create my virtual machines. After downloading a Windows !0, Windows Server, Kali Linux, and Ubuntu Server iso files, I created my VM's. After creating and boot up, they were configured and updated. Below I will show the configuration for my Windows 10 machine.
+Now it was time to create my virtual machines. After downloading a Windows 10, Windows Server, Kali Linux, and Ubuntu Server iso files, I created my VM's. After creating and boot up, they were configured and updated. Below I will show the configuration for my Windows 10 machine.
+
 ![Windows 10 install 1](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/0b370fe1-820a-449f-bb26-a0bbcecb3970)
 ![Windows 10 install 2](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/d2c06d6c-2179-4f77-8406-7aadca93f1c9)
 ![Windows 10 install 3](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/483c6868-5801-4984-ba61-80d09da6d2ab)
