@@ -64,7 +64,7 @@ To install Sysmon, on both the Windows machines, I first downloaded Syson by Sys
 
 # 
 
-The next step was to intruct the Splunk Universal Forwarder on what to send over to the Splunk Server. This was achieved by editing the inputs.conf file of the Universal Forwarder on my Windows machines. This was found by going to LocalDisk(C:)>ProgramFiles>SplunkUniversalForwarder>etc>system>default>inputs.conf. However, this was not the actual file I edited. I wanted to leave that default file there to ensure that if something went wrong, I could revert back to that default file. Instead, I opened up notepad as administrator and copied the config file provided by MyDFIR in his guide. The file was saved and store in LocalDisk(C:)>ProgramFiles>SplunkUniversalForwarder>etc>system>local.
+The next step was to intruct the Splunk Universal Forwarder on what to send over to the Splunk Server. This was achieved by editing the inputs.conf file of the Universal Forwarder on my Windows machines. This was found by going to LocalDisk(C:)>ProgramFiles>SplunkUniversalForwarder>etc>system>default>inputs.conf. However, this was not the actual file I edited. I wanted to leave that default file there to ensure that if something went wrong, I could revert back to that default file. Instead, I opened up notepad as administrator and copied the config file provided by MyDFIR in his guide. This created an index in Splunk named "endpoint" where all of the events from my Windows Machines could be seen. The file was saved and store in LocalDisk(C:)>ProgramFiles>SplunkUniversalForwarder>etc>system>local.
 
 ![inputs conf file](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/26d9c45d-4887-4ff7-82a6-3665bc93b830)
 ![system local inputs conf](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/681b4c0a-257a-47a8-9cda-6f7f953b60a9)
@@ -76,6 +76,14 @@ Because I updated the inputs.conf file, I needed to restart the Splunk Universal
 
 ![Splunk log on](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/47ce6297-c9f5-4356-9833-eb13594e43cc)
 ![restart splunk forwarder](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/4c4dd469-45b7-439f-af39-358dc66541fb)
+
+#
+
+Next, it was time to log back into Splunk, create a new receiving port (9997), and create an index called "endpoint" to see the events from my Windows Machines. I logged back into the Splunk web interface on my Windows 10 machine, clicked settings at the top, and clikced forwarding and receiving > configure receiving > clicked New Receiving Port, and added port 9997. Next I went back to the settings menu and clicked indexes, new index, and added the index name "endpoint". Going back to the Splunk dashboard, I could now search index=endpoint to see data being sent from my Windows machines.
+
+![new receiving port](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/e04103a7-48c0-4f4a-9e1c-3ec8ce8e77d8)
+![new index](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/9ec41d73-7ba9-44df-ad28-6e76e54029d3)
+![endpoint search](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/822f7e2c-6810-4010-af68-966da4af1592)
 
 #
 
