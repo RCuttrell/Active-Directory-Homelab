@@ -17,6 +17,18 @@ Proxmox Config and Web Interface
 ![Proxmox Home](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/ec1dd9e7-54bf-4ab5-955e-f684cb1b7a85)
 
 #
+
+Now it was time to create my virtual machines. After downloading a Windows !0, Windows Server, Kali Linux, and Ubuntu Server iso files, I created my VM's. After creating and boot up, they were configured and updated. Below I will show the configuration for my Windows 10 machine.
+![Windows 10 install 1](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/0b370fe1-820a-449f-bb26-a0bbcecb3970)
+![Windows 10 install 2](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/d2c06d6c-2179-4f77-8406-7aadca93f1c9)
+![Windows 10 install 3](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/483c6868-5801-4984-ba61-80d09da6d2ab)
+![Windows 10 install 4](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/a8496a62-e390-4e68-a7fb-4a70e343de76)
+![Windows 10 install 5](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/bdbbdfe5-1ad4-46bb-9272-30b139e08ecf)
+![Windows 10 install 6](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/04e6eb31-d096-4cda-999d-7e4d9ee5cd84)
+![Windows 10 install 7](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/b357774c-673b-4cc1-8c0e-020c79348aee)
+
+#
+
 The next step was to create a new virtual Linux bridge. I did this to make sure that all of my VM's remained in their own virtual lan and could not speak to other hosts on my home network. I left the default name for the bridge (vrmbr1) and set the IP address to 192.168.10.1/24. I then set configured the network adapters in my machines to utilize my new Linux bridge (vmbr1). After this step, I needed a way to be sure the machines could still access the internet. To do this, I SSH'd back into Promox machine and configured the new Limux Bridge to forward internet traffic to and from the Lenovo network adaptor (vmbr0). 
 ![Virtual Linux Bridge](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/9d12d896-990f-499b-9f46-00384f79a2c8)
 ![vmbr1 Config](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/a523ed65-9dc8-4d6e-9e59-13b31f473b46)
