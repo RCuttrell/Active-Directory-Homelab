@@ -86,4 +86,14 @@ Next, it was time to log back into Splunk, create a new receiving port (9997), a
 
 #
 
+My next step was to set up active directory. To do this, I opened up my Windows Server machine and opened the Server Manager. Here, I clicked Manage at the top and selected Add Roles and Features. I clicked next through the wizard until I reached Server Roles. I added the Active Directory Domain Services and clicked Add Features. Next I continued through the wizard until it was time to install. I clicked install and noticed a flag at the top of the Server Manager. After clicking the flag, I was prompted to Promote the server to a domain controller. After selecting that, I set the deployment configuration to add new forest and named my domain "homelab.local". On the next page I created a password and continued through the install wizard with the default settings left as is and finally the server restarted to complete the intallation.
+
+![image](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/72db2277-c551-45cb-8253-9379356698e9)
+![AD step 2](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/eb433d8d-292d-42ae-ba17-f0992d088609)
+![AD step 3](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/22ef4234-48a2-46c8-b5aa-75e20e9704a6)
+![AD step 4](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/e324c8eb-c27a-4f3e-afde-3425579196ad)
+![AD step 5](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/68ae0e08-80fc-4732-97d6-7e6e12d19f2b)
+
+#
+
 
