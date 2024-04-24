@@ -88,7 +88,7 @@ Next, it was time to log back into Splunk, create a new receiving port (9997), a
 
 My next step was to set up active directory. To do this, I opened up my Windows Server machine and opened the Server Manager. Here, I clicked Manage at the top and selected Add Roles and Features. I clicked next through the wizard until I reached Server Roles. I added the Active Directory Domain Services and clicked Add Features. Next I continued through the wizard until it was time to install. I clicked install and noticed a flag at the top of the Server Manager. After clicking the flag, I was prompted to Promote the server to a domain controller. After selecting that, I set the deployment configuration to add new forest and named my domain "homelab.local". On the next page I created a password and continued through the install wizard with the default settings left as is and finally the server restarted to complete the intallation.
 
-![image](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/72db2277-c551-45cb-8253-9379356698e9)
+![AD step 1](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/65271e88-1893-4e4b-8cbf-c5600ec0116e)
 ![AD step 2](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/eb433d8d-292d-42ae-ba17-f0992d088609)
 ![AD step 3](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/22ef4234-48a2-46c8-b5aa-75e20e9704a6)
 ![AD step 4](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/e324c8eb-c27a-4f3e-afde-3425579196ad)
@@ -96,4 +96,10 @@ My next step was to set up active directory. To do this, I opened up my Windows 
 
 #
 
+After logging backing into the server, it was time to add some users. To do this, I went to the top of the Windows Server Manager, selected Tools, then selected Active Directory Users and Computers. The window displayed there was where I was going to create two ogranizational units, IT and HR. Within those organizational units, I would create users, Bob Smith in IT and Jane Smith in HR. To do this, I right clicked "homelab.local", > New > Orgranizational Unit. I added IT and repeated the process for HR. I then right clicked IT > New > User and added Bob Smith with bsmith as the username. Clicking next, I added a password (unchecked "User must change password" to keep things simple)", and just like that, Bob Smith was now a member of the IT department in my lab. Finally, I continued the process for Jane Smtih in HR.
 
+![users step 1](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/640a83e6-5ce1-48af-a5a8-b565780f8da0)
+![users step 2](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/227d57e5-d438-47cd-b01f-81c612161108)
+![users step 3](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/4ea1ecac-2724-448a-8031-3141d4ea7973)
+
+#
