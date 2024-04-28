@@ -103,3 +103,31 @@ After logging backing into the server, it was time to add some users. To do this
 ![users step 3](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/4ea1ecac-2724-448a-8031-3141d4ea7973)
 
 #
+
+Now that I have successfully created my active directory environment with groups IT and HR, as well as users Bob Smith and Jane Smith, the final step was to insatll Atomic Red Team onto my Windows 10 machine and simulate a brute force attack from my Kali Linux machine to generate telemtry and view the events in Splunk. The firt step was to download and install the Crowbar tool onto my Kali Linux machine using the "sudo apt install crowbar" command. 
+
+![install crowbar](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/975bc9dc-7482-4401-a987-30794cc4c1dc)
+
+#
+
+Next I cd'd into the words lists file within kali linux located at /usr/share/wordlists and unzip the rockyou.txt.gz file using the "sudo gunzip rockyou.txt.gz" command. Now, this word list is massive and for the purpose of this project, I wanted to simulate a successful brute force attack without iterating through each word in the rockyou.txt file. So to create a smaller wordlists file I used the "head -n 20 rockyou.txt > passwords.txt" command to create a new word list file called "passwords.txt" containing only the first 20 passwords of the rockyou.txt file. THe final step was to edit the passwords.txt file using nano and add the passwords for users Bob Smith and Jane Smith to enrue the brute force attack on those users was successful.
+
+![gunzip rockyou](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/b7b20b78-2510-4a96-bfc5-669c274880ff)
+![create passwordstxt](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/cc44eab5-39ab-4784-a1c5-5fe7055cbab3)
+![add password](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/d006bf55-1db6-4f3b-be8a-98b7625d2fbf)
+
+#
+
+The next step was to enable RDP on the Windows 10 machine. To do this, I went into My PC > Properties > Advanced system settings > Remote tab > and checked Allow Remote Assistance connections to this computer. Then I clicked Select Users and added users bsmith and jsmith, my two active directory users. 
+
+![enable rdp](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/2244b7e1-3ef7-47a8-9a60-652331450461)
+![rdp users](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/9f2fa1b1-0a6c-469b-b2ee-5bd1313041fc)
+
+#
+
+Now, it was finally time for the fun part. I logged back into the Kali Linux machine to create a brute force attack against Bob Smith. Using the crowbar tool, I ran "crowbar -b rdp -u bsmith -C passwords.txt -s 192.168.10.3/32". To break this down, I executed the crowbar tool using "crowbar", specified the service I would be attacking using the -b flag, chose user bsmith using the -u flag, the wordlist I wanted to use with the -C flag, and finally the IP address of the target machine using the -s flag. Note that I used the /32 cidr to specify that that was the only IP address within the network that I would be attacking.
+
+![crowbar attack](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/b1f75a99-c901-4e9e-928f-87d048d0939c)
+
+#
+
