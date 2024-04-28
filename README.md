@@ -1,7 +1,7 @@
 # Active-Directory-Homelab-In-Promox
 
 ## Project:
-The goal of this homelab was to create an Active Directory enviroment using virtual Windows 10 and Windows Server machines. I will also create a Splunk server on a virtual Ubuntu Server machine as well as a virtual Kali Linux box to simulate attacks on the Windows 10 machine. With the Splunk Universal Forwarder and Sysmon installed on the Windows machines, these attacks will generate telemetry and create events in Splunk to be analyzed.  
+The goal of this homelab was to create an Active Directory enviroment using virtual Windows 10 and Windows Server machines. I also configured a Splunk server on a virtual Ubuntu Server machine as well as a virtual Kali Linux box to simulate attacks against the Windows 10 machine. With the Splunk Universal Forwarder and Sysmon installed on the Windows machines, these attacks generated telemetry and created events in Splunk to be analyzed.  
 
 MyDFIR's guide: https://www.youtube.com/watch?v=5OessbOgyEo
 
@@ -36,13 +36,13 @@ The next step was to create a new virtual Linux bridge. I did this to make sure 
 ![vmbr1 Config](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/a523ed65-9dc8-4d6e-9e59-13b31f473b46)
 ![Set vmbr1 to machines](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/81877d7f-e2bd-44ef-914f-b8671e8c6849)
 
-Quick note, I also went into each virtual machine and set static IP addresses and a gateway of 192.168.10.1. In the screenshot below, the DNS server of the Windows 10 machine is set to the IP address of the Windows Server. For now, leave the DNS set to obtain automatically (more on that later).
+Quick note, I also went into each virtual machine and set static IP addresses and a gateway of 192.168.10.1. In the screenshot below, the DNS server of the Windows 10 machine is set to the IP address of the Windows Server. For now, leave the DNS set to obtain automatically (once Active Directory was set up, I changed the DNS of the Windows 10 machine to the IP address of the Windows Server so that my Windows 10 machine could locate the server. In the image below, it was already set to my Windows Server IP).
 
 ![Static Ip in W10](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/ab6ded7e-ec89-49a2-979f-06056963981f)
 
 #
 
-Now that all of my virtual machines were created, installed, and configured on the VLAN, it was time to install Splunk onto my Ubuntu Server machine. I went ahead to the Splunk website, set up an account, and installed Splunk enterprise on the Ubuntu Server machine using the wget command. I had a little trouble with setting the this but was able to get it up and running after fidining a guide here: https://www.youtube.com/watch?v=oHUXY7B83Ww&t=841s After setting up my admin account, I logged into the web interface on my Windows Server machine via the Ubuntu Server's IP address and the default port of 8000. I was then ready to start installing Splunk Universal Forwarder and Sysmon onto the Windows 10 and Windows Server Machines.
+Now that all of my virtual machines were created, installed, and configured on the VLAN, it was time to install Splunk onto my Ubuntu Server machine. I went ahead to the Splunk website, set up an account, and installed Splunk enterprise on the Ubuntu Server machine using the wget command. I had a little trouble with the install but was eventually able to get it up and running after fidining a guide here: https://www.youtube.com/watch?v=oHUXY7B83Ww&t=841s After setting up my admin account, I logged into the web interface on my Windows Server machine via the Ubuntu Server's IP address and the default port of 8000. I was then ready to start installing Splunk Universal Forwarder and Sysmon onto the Windows 10 and Windows Server Machines.
 
 ![Splunk Web Interface](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/7852dbcf-3cb5-4e8a-a2b3-f98c98a3e79f)
 
@@ -53,10 +53,9 @@ On both of the Windows machine, I logged back into the Splunk website and downlo
 ![universal forwarder](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/259a5c26-983f-4232-b582-fc07c3a90b1d)
 ![universal forwarder receiving idexer](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/2c53b5e5-92ce-4a67-9c1d-75871fdcff8c)
 
-
 #
 
-To install Sysmon on both the Windows machines, I first downloaded Syson by Sysinternals from Microsoft's website. Next, I went to olafhartong's Github page and selected the sysmon-modular repository here: https://github.com/olafhartong/sysmon-modular. After scrolling down, I selected the sysmonconfig.xml file, clicked raw, right clicked the page, and clicked save as. The file was saved as sysmonconfig to the downloads directory. Next, I extrated the sysmon file from Sysinternals in the Downloads directory, opened Powershell as administrator, cd's to the Sysmon file and ran the executable with olafhartong's sysmonconfig.xml file as shown below. Now both Sysmon and Universal Forwarder were installed on my Windows Machines.
+To install Sysmon on both the Windows machines, I first downloaded Sysmon by Sysinternals from Microsoft's website. Next, I went to olafhartong's Github page and selected the sysmon-modular repository here: https://github.com/olafhartong/sysmon-modular. After scrolling down, I selected the sysmonconfig.xml file, clicked raw, right clicked the page, and clicked save as. The file was saved as sysmonconfig to the downloads directory. Next, I extrated the sysmon file from Sysinternals in the Downloads directory, opened Powershell as administrator, cd'd to the Sysmon file, and ran the executable with olafhartong's sysmonconfig.xml file as shown below. Now both Sysmon and Universal Forwarder were installed on my Windows Machines.
 
 ![sysmon sysinternals](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/5b2e7d35-79d4-434c-9dfc-f93c78ea49cb)
 ![sysmon file](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/26786b97-a9ae-478a-b1ea-72baf094a530)
@@ -64,14 +63,14 @@ To install Sysmon on both the Windows machines, I first downloaded Syson by Sysi
 
 # 
 
-The next step was to intruct the Splunk Universal Forwarder on what to send over to the Splunk Server. This was achieved by editing the inputs.conf file of the Universal Forwarder on my Windows machines. The file was located at LocalDisk(C:)>ProgramFiles>SplunkUniversalForwarder>etc>system>default>inputs.conf. However, this was not the actual file I wanted to edit. I wanted to leave that default file there to ensure that if something went wrong, I could revert back to that default file. Instead, I opened up notepad as administrator and copied the config file provided by MyDFIR in his guide found here: https://github.com/MyDFIR/Active-Directory-Project. This created an index in Splunk named "endpoint" where all of the events from my Windows Machines could be seen via Splunk. The file was saved and store in LocalDisk(C:)>ProgramFiles>SplunkUniversalForwarder>etc>system>local.
+The next step was to intruct the Splunk Universal Forwarder on what to send over to the Splunk Server. This was achieved by editing the inputs.conf file of the Universal Forwarder on my Windows machines. The file was located at LocalDisk(C:)>ProgramFiles>SplunkUniversalForwarder>etc>system>default>inputs.conf. However, this was not the actual file I wanted to edit. I wanted to leave that default file there to ensure that if something went wrong, I could revert back to that default file. Instead, I opened up notepad as administrator and copied the config file provided by MyDFIR in his guide found here: https://github.com/MyDFIR/Active-Directory-Project. This created an index in Splunk named "endpoint" where all of the events from my Windows Machines could be seen via Splunk search. The file was saved and store in LocalDisk(C:)>ProgramFiles>SplunkUniversalForwarder>etc>system>local.
 
 ![inputs conf file](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/26d9c45d-4887-4ff7-82a6-3665bc93b830)
 ![system local inputs conf](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/681b4c0a-257a-47a8-9cda-6f7f953b60a9)
 
 #
 
-Because I updated the inputs.conf file, I needed to restart the Splunk Universal Forwarder. To do this, I opened services as administrator and scrolled down to SplunkForwarder. After finding the SplunkForwarder service, I noticed the Log On was set to This account. By double clikcing SplunkForwarder, I tabbed over to Log On and checked off Local System account. This ensured that Splunk would be able to collect logs and not run into any problems due to permissions. Afterwards, I restarted the Splunk Forwarder service.
+Because I updated the inputs.conf file, I needed to restart the Splunk Universal Forwarder. To do this, I opened services as administrator and scrolled down to SplunkForwarder. After finding the SplunkForwarder service, I noticed the Log On was set to This account. By double clicking SplunkForwarder, I tabbed over to Log On and checked off Local System account. This ensured that Splunk would be able to collect logs and not run into any problems due to permissions. Afterwards, I restarted the Splunk Forwarder service.
 
 ![Splunk log on](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/47ce6297-c9f5-4356-9833-eb13594e43cc)
 ![restart splunk forwarder](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/4c4dd469-45b7-439f-af39-358dc66541fb)
@@ -96,7 +95,7 @@ My next step was to set up active directory. To do this, I opened up my Windows 
 
 #
 
-After logging backing into the server, it was time to add some users. To do this, I went to the top of the Windows Server Manager, selected Tools, then selected Active Directory Users and Computers. The window displayed there was where I was going to create two ogranizational units, IT and HR. Within those organizational units, I would create users, Bob Smith in IT and Jane Smith in HR. To do this, I right clicked "homelab.local", > New > Orgranizational Unit. I added IT and repeated the process for HR. I then right clicked IT > New > User and added Bob Smith with bsmith as the username. Clicking next, I added a password (unchecked "User must change password" to keep things simple)", and just like that, Bob Smith was now a member of the IT department in my lab. Finally, I continued the process for Jane Smtih in HR.
+After logging backing into the server, it was time to add some users. To do this, I went to the top of the Windows Server Manager, selected Tools, then selected Active Directory Users and Computers. The window displayed there was where I was going to create two ogranizational units, IT and HR. Within those organizational units, I would create users, Bob Smith in IT and Jane Smith in HR. To do this, I right clicked "homelab.local", > New > Orgranizational Unit. I added IT and repeated the process for HR. I then right clicked IT > New > User and added Bob Smith with bsmith as the username. Clicking next, I added a password (unchecked "User must change password" to keep things simple)", and just like that, Bob Smith was now a member of the IT department in my lab. Finally, I continued the process for Jane Smtih in HR. 
 
 ![users step 1](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/640a83e6-5ce1-48af-a5a8-b565780f8da0)
 ![users step 2](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/227d57e5-d438-47cd-b01f-81c612161108)
@@ -110,7 +109,7 @@ Now that I have successfully created my active directory environment with groups
 
 #
 
-Next I cd'd into the words lists file within kali linux located at /usr/share/wordlists and unzip the rockyou.txt.gz file using the "sudo gunzip rockyou.txt.gz" command. Now, this word list is massive and for the purpose of this project, I wanted to simulate a successful brute force attack without iterating through each word in the rockyou.txt file. So to create a smaller wordlists file I used the "head -n 20 rockyou.txt > passwords.txt" command to create a new word list file called "passwords.txt" containing only the first 20 passwords of the rockyou.txt file. THe final step was to edit the passwords.txt file using nano and add the passwords for users Bob Smith and Jane Smith to enrue the brute force attack on those users was successful.
+Next I cd'd into the wordlists file within kali linux located at /usr/share/wordlists and unziped the rockyou.txt.gz file using the "sudo gunzip rockyou.txt.gz" command. Now, this wordlist is massive and for the purpose of this project, I wanted to simulate a successful brute force attack without iterating through each word in the rockyou.txt file. So to create a smaller wordlists file, I used the "head -n 20 rockyou.txt > passwords.txt" command to create a new word list file called "passwords.txt" containing only the first 20 passwords of the rockyou.txt file. THe final step was to edit the passwords.txt file using nano and add the passwords for users Bob Smith and Jane Smith to ensure the brute force attack on those users was successful.
 
 ![gunzip rockyou](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/b7b20b78-2510-4a96-bfc5-669c274880ff)
 ![create passwordstxt](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/cc44eab5-39ab-4784-a1c5-5fe7055cbab3)
@@ -125,13 +124,13 @@ The next step was to enable RDP on the Windows 10 machine. To do this, I went in
 
 #
 
-Now, it was finally time for the fun part. I logged back into the Kali Linux machine to create a brute force attack against Bob Smith. Using the crowbar tool, I ran "crowbar -b rdp -u bsmith -C passwords.txt -s 192.168.10.3/32". To break this down, I executed the crowbar tool using "crowbar", specified the service I would be attacking using the -b flag, chose user bsmith using the -u flag, the wordlist I wanted to use with the -C flag, and finally the IP address of the target machine using the -s flag. Note that I used the /32 cidr to specify that that was the only IP address within the network that I would be attacking.
+Now, it was finally time for the fun part. I logged back into the Kali Linux machine to create a brute force attack against Bob Smith. Using the crowbar tool, I ran "crowbar -b rdp -u bsmith -C passwords.txt -s 192.168.10.3/32". To break this down, I executed the crowbar tool using "crowbar", specified the service I would be attacking using the -b flag, chose user bsmith using the -u flag, the wordlist I wanted to use with the -C flag, and finally the IP address of the target machine using the -s flag. Note that I used the /32 CIDR notation to specify that that was the only IP address within the network that I would be attacking.
 
 ![crowbar attack](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/b1f75a99-c901-4e9e-928f-87d048d0939c)
 
 #
 
-To view the telemtry generated from this attack in Splunk, I logged into the Splunk web interace on my Windows 10 machine and searched the index of endpoint. I narrowed my search to the last 15 minute, clicked on the EventCode tab, and notiiced there was a large amount of event codes of 4625. A quick Google searched revealed that this code was for failed login attempts on my Windows 10 machine from user Bob Smith. After clicking the event code, I could see the details of the event inclduing the time, the computer name, which I named "target-PC", the event message, and the user that the login attempt was made on. 
+To view the telemtry generated from this attack in Splunk, I logged into the Splunk web interace on my Windows 10 machine and searched the index of endpoint. I narrowed my search to the last 15 minute, clicked on the EventCode tab, and noticed there was a large amount of event codes of 4625. A quick Google search revealed that this code was for failed login attempts. After clicking the event code, I could see the details of the event inclduing the time, the computer name, which I named "target-PC", the event message, and the user that the login attempt was made on. 
 
 ![splunk event codes](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/cd09210a-cf51-48ed-9e5e-457d95541ceb)
 ![event code 4625](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/73dd7770-24a8-4f94-a3bf-ede5d836457d)
@@ -145,13 +144,13 @@ The final step for this project was to install Atomic Red Team onto my Windows 1
 
 #
 
-Next, I needed to add an exclusion in Windows Defender for Atomic Red Team otherwise some of the Atomic Red Team files may be removwed by it. To do this, I wend into the Windows Security tool, selected Virus and threat protection > Manage settings > Add or remove exclusioms (this will prompt you to enter the administrator username and password) > Add an exclusion > Folder > This PC > and select the entire C:\ driver. After logging into the administrator account again, this step was complete.
+Next, I needed to add an exclusion in Windows Defender for Atomic Red Team otherwise some of the Atomic Red Team files may be removed by it. To do this, I went into the Windows Security tool, selected Virus and threat protection > Manage settings > Add or remove exclusioms (this will prompt you to enter the administrator username and password) > Add an exclusion > Folder > This PC > and selected the entire C:\ drive. After logging into the administrator account again, this step was complete.
 
 ![add exclusion](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/2f99228a-1052-4695-bb44-6e8c1645e91f)
 
 #
 
-Now it was finally time to install Atomic Red Team onto the Windows 10 machine. Back in Powershell (as administrator), I first ran the command "IEX (IWR 'https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1' UseBasicParsing);". Next, I ran "Install-AtomicRedTeam -getAtomics" which istalled the software. 
+Now it was finally time to install Atomic Red Team onto the Windows 10 machine. Back in Powershell (as administrator), I first ran the command "IEX (IWR 'https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1' UseBasicParsing);". Next, I ran "Install-AtomicRedTeam -getAtomics" which installed the software. 
 
 ![install atomic red team](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/9e317fae-11f8-4574-9c63-fc063896d872)
 
@@ -172,7 +171,7 @@ Back in the Powershell terminal, I ran the command "Invoke AtomicTest T1136.001"
 
 #
 
-I ran another Atomic Test using the command "Invoke AtomicTest T1059.001" which mimicked an unauthorized user attempting to use Powershell. After running the command and searching "index="endpoint Powershell" I obserevd multiple security events indicating an unauthorized user was attempting to use Powershell.
+I ran another Atomic Test using the command "Invoke AtomicTest T1059.001" which mimicked an unauthorized user attempting to use Powershell. After running the command and searching "index="endpoint Powershell" I observed multiple security events indicating an unauthorized user was attempting to use Powershell.
 
 ![running t1059 001](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/c16132b3-c50d-4d86-9d11-cf4a4b0e9e6f)
 ![mitre t1059](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/295a1884-fabe-4547-8900-335b99a85b5c)
