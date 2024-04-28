@@ -131,3 +131,54 @@ Now, it was finally time for the fun part. I logged back into the Kali Linux mac
 
 #
 
+To view the telemtry generated from this attack in Splunk, I logged into the Splunk web interace on my Windows 10 machine and searched the index of endpoint. I narrowed my search to the last 15 minute, clicked on the EventCode tab, and notiiced there was a large amount of event codes of 4625. A quick Google searched revealed that this code was for failed login attempts on my Windows 10 machine from user Bob Smith. After clicking the event code, I could see the details of the event inclduing the time, the computer name, which I named "target-PC", the event message, and the user that the login attempt was made on. 
+
+![splunk event codes](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/cd09210a-cf51-48ed-9e5e-457d95541ceb)
+![event code 4625](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/73dd7770-24a8-4f94-a3bf-ede5d836457d)
+![event code 4625 details](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/8f81e187-ec3c-4d36-b290-0eb0d8c90bf8)
+
+#
+
+The final step for this project was to install Atomic Red Team onto my Windows 10 machine. This service allows commands to be run that automatically simulate attacks on the machine it is running on. To start the installation process, some prepartions needed to be done on the Windows 10 machine. First, I needed to set the execution policy in powershell to bypass the current user of the machine. To do this I ran the command "Set ExectionPolicy Bypass CurrentUser" in powershell as administrator. 
+
+![set executionpolicy](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/8ec4275f-3cb1-4ee7-9cd6-e1ddaab18fed)
+
+#
+
+Next, I needed to add an exclusion in Windows Defender for Atomic Red Team otherwise some of the Atomic Red Team files may be removwed by it. To do this, I wend into the Windows Security tool, selected Virus and threat protection > Manage settings > Add or remove exclusioms (this will prompt you to enter the administrator username and password) > Add an exclusion > Folder > This PC > and select the entire C:\ driver. After logging into the administrator account again, this step was complete.
+
+![add exclusion](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/2f99228a-1052-4695-bb44-6e8c1645e91f)
+
+#
+
+Now it was finally time to install Atomic Red Team onto the Windows 10 machine. Back in Powershell (as administrator), I first ran the command "IEX (IWR 'https://raw.githubusercontent.com/redcanaryco/invoke-atomicredteam/master/install-atomicredteam.ps1' UseBasicParsing);". Next, I ran "Install-AtomicRedTeam -getAtomics" which istalled the software. 
+
+![install atomic red team](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/9e317fae-11f8-4574-9c63-fc063896d872)
+
+#
+
+Going into C:\ > AtomicRedTeam > Atomics, I observed a long list of technique IDs associated with the Mitre Attack Framework. For my test example, I wanted simulate gaining persistance by attempting to create an account on my target-PC. By highlighting "Create Account" under "Persistance" on the Mitre Attack Framework website, I observed that the technique ID was T1136. Going back into my atomics folder, I saw that there were three technique IDs for T1136 (T1136.001, T1136.002, and T1136.003). Going back onto the Mitre Attack website and clicking the tab next to "Create Account", it was revealed that .001 was to create a local account, .002 was to create a domain account, and .003 was to create a cloud account.
+
+![mitre create account](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/cf204fa4-37f6-491d-93ba-e0cf28970313)
+![atomics](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/a1e1876b-c7ac-40a4-82d1-d629c198334e)
+![t1136](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/acac9016-a48c-4b29-b6d8-f9e06d552b1a)
+
+#
+
+Back in the Powershell terminal, I ran the command "Invoke AtomicTest T1136.001" to generate telemtry on the Windows 10 machine simulating an attack which mimicked a user attempting to create a new local user called "NewLocalUser". Back in Splunk, a search for the index of enpoint with NewLocalUser revealed multiple security events indicating the user "NewLocalUser" was attempting to be created.
+
+![generate t1136 001](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/3ff64644-5f1a-48d7-b5da-c8a0f6f2ec64)
+![newlocaluser](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/a5c59bed-fe19-4703-ae4f-a1afa5aebb51)
+
+#
+
+I ran another Atomic Test using the command "Invoke AtomicTest T1059.001" which mimicked an unauthorized user attempting to use Powershell. After running the command and searching "index="endpoint Powershell" I obserevd multiple security events indicating an unauthorized user was attempting to use Powershell.
+
+![running t1059 001](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/c16132b3-c50d-4d86-9d11-cf4a4b0e9e6f)
+![mitre t1059](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/295a1884-fabe-4547-8900-335b99a85b5c)
+![powershell ](https://github.com/RCuttrell/Active-Directory-Homelab/assets/111534355/91e1d0a8-adf0-4a2d-a19e-092c59ba1311)
+
+#
+
+## Conclusion:
+At the end of the homelab, I had successfully created four virtual machines in Proxmox, create an Active Directory environment with separate groups and users, properly configure a Splunk server to receive events using the Splunk Forwarder and Sysmon on my machines, simulate a brute force attack using Kali Linux, and view and evaluate event logs on Splunk. This was an extremely fun project and I would like to thank MyDFIR for the guide on his youtube page which allowed me to setup this enviroment at home within my own Homelab.
